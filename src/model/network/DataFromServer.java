@@ -13,6 +13,7 @@ public class DataFromServer implements Serializable {
 	private int whoseTurn;
 	private int clientId;
 	private int packetId;
+	private String request;
 	  
 	public DataFromServer(int packetNumber, ArrayList<Card> cardsOnTable, ArrayList<Card> newClientCards, int clientId, int whoseTurn) {
 		this.packetId = packetNumber;
@@ -35,6 +36,15 @@ public class DataFromServer implements Serializable {
 	public DataFromServer(int packetNumber, int whoseTurn) {
 		this.packetId = packetNumber;
 		this.whoseTurn = whoseTurn;
+	}
+	public DataFromServer(int packetNumber, ArrayList<Card> cardsOnTable, String request, int whoseTurn) {
+		this.packetId = packetNumber;
+		this.cardsOnTable = cardsOnTable;
+		this.request = request;
+		this.whoseTurn = whoseTurn;
+	}
+	public ArrayList<Card> getCardsOnTable(){
+		return cardsOnTable;
 	}
 
 
