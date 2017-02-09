@@ -79,11 +79,14 @@ class RoomThread extends Thread {
 					int check = checkForSpecialCard(dataFromClient.getClientCards());
 					
 					if(check!=(-1)){
+						System.out.println("check: -1");
 						whoseTurn = (whoseTurn +1)%(clients.size());
 					}
 					if(check==1){
+						System.out.println("check: 1");
 						dataFromServer = new DataFromServer(4, dataFromClient.getClientCards(), whoseTurn);
 						for(Client client : clients){
+							System.out.println("pakiet poszed³ do wszzystkich prócz: " + whoseTurn);
 							if(!client.equals(clients.get(whoseTurn))){
 								sendPacket(client,dataFromServer);
 							}	
@@ -183,21 +186,20 @@ class RoomThread extends Thread {
 		DataFromServer dataFromServer;
 		switch(card.getCardValue()){
 			case TWO:
-				noOfPenaltyCards += 2*clientCards.size();
-				dataFromServer = new DataFromServer(5,clientCards, whoseTurn);
-				sendPacket(clients.get(whoseTurn), dataFromServer);
+				noOfPenaltyCards += 2;
+				dataFromServer = new DataFromServer(5,clientCards, (whoseTurn +1)%(clients.size()) );
+				sendPacket(clients.get((whoseTurn +1)%(clients.size())), dataFromServer);
 				flag = 1;
 				break;
 			case THREE:
-				noOfPenaltyCards += 3*clientCards.size();
-				dataFromServer = new DataFromServer(6,clientCards, whoseTurn);
-				sendPacket(clients.get(whoseTurn), dataFromServer);
+				noOfPenaltyCards += 3;
+				dataFromServer = new DataFromServer(6,clientCards, (whoseTurn +1)%(clients.size()));
+				sendPacket(clients.get((whoseTurn +1)%(clients.size())), dataFromServer);
 				flag = 1;
 				break;
 			case FOUR:
-				noOfPenaltyCards = 3*clientCards.size();
-				dataFromServer = new DataFromServer(7,clientCards, whoseTurn);
-				sendPacket(clients.get(whoseTurn), dataFromServer);
+				dataFromServer = new DataFromServer(7,clientCards, (whoseTurn +1)%(clients.size()));
+				sendPacket(clients.get((whoseTurn +1)%(clients.size())), dataFromServer);
 				flag = 1;
 				break;
 			case ACE:
@@ -207,13 +209,14 @@ class RoomThread extends Thread {
 				System.out.println("AS "+whoseTurn);
 				sendPacket(clients.get(whoseTurn), dataFromServer);
 				flag = -1;
+				break;
 			case JACK:
 				globalClientCards = clientCards;
 				System.out.println("przyszed³ jopek " + globalClientCards.get(0).getCardValue()+ " " + globalClientCards.get(0).getSuit() );
 				dataFromServer = new DataFromServer(9,clientCards, whoseTurn);
 				sendPacket(clients.get(whoseTurn), dataFromServer);
 				flag = -1;
-
+				break;
 		}
 		return flag;
 		

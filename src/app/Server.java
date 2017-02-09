@@ -31,18 +31,18 @@ public class Server {
 	    
 	    while (true) {
 	    	try {
-		    	if(i>=4 || roomThread.getIsGameStarted()){
-		    		roomThread = new RoomThread(getDeckOfCards());
-		    		
-		    	}
-		    	clientSocket = serverSocket.accept();
+	    		clientSocket = serverSocket.accept();
 		        System.out.println("Connection from: " + clientSocket.getInetAddress());
 				Client client = new Client(clientSocket);
 				
-				roomThread.addClient(client);
-				if(i%4==0){
-					roomThread.start();
-				}
+		    	if(i%4==0 || roomThread.getIsGameStarted()){
+		    		System.out.println("Tworzê nowy obiekt w¹tku");
+		    		roomThread = new RoomThread(getDeckOfCards());
+		    		roomThread.addClient(client);
+		    		roomThread.start();
+		    	}else{
+		    		roomThread.addClient(client);
+		    	}
 				
 				i++;
 		      } catch (IOException e) {
