@@ -34,12 +34,6 @@ public class RoomThread extends Thread {
 	
 	public void run() {
 		while(!Thread.currentThread().isInterrupted()){
-			System.out.println("--------------------------------------------");
-			System.out.println("karty na stole: ");
-			for(Card card : cardsOnTable){
-				System.out.println(card.getCardValue() + " of " + card.getSuit());			
-			}
-			System.out.println("--------------------------------------------");
 			DataFromClient dataFromClient = readDataFromClient();
 			int packetId = 0;
 			if(dataFromClient!=null){
@@ -51,17 +45,14 @@ public class RoomThread extends Thread {
 					for(Card card : dataFromClient.getClientCards()){
 						cardsOnTable.add(card);
 					}
-					System.out.println("Po³o¿one karty Gracza " + whoseTurn);
+					System.out.println("Po³o¿one kartysfsd Gracza " + whoseTurn);
 					System.out.println(dataFromClient.getClientCards().get(0).getCardValue() +" "+ dataFromClient.getClientCards().get(0).getSuit() );
 
 					int check = checkForSpecialCard(dataFromClient.getClientCards());
 					
-					if(check!=(-1)){
-						System.out.println("check: -1");
-						whoseTurn = (whoseTurn +1)%(clients.size());
-					}
 					if(check==1){
 						System.out.println("check: 1");
+						whoseTurn = (whoseTurn +1)%(clients.size());
 						dataFromServer = new DataFromServer(4, dataFromClient.getClientCards(), (Integer)keyList[whoseTurn]);
 						for(Client client : clients.values()){
 							System.out.println("pakiet poszed³ do wszzystkich prócz: " + keyList[whoseTurn]);
@@ -70,6 +61,7 @@ public class RoomThread extends Thread {
 							}	
 						}
 					}else if(check==0){
+						whoseTurn = (whoseTurn +1)%(clients.size());
 						dataFromServer = new DataFromServer(4, dataFromClient.getClientCards(), (Integer)keyList[whoseTurn]);	
 						sendPacketToEveryone(dataFromServer);
 					}

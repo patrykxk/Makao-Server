@@ -52,7 +52,6 @@ public class Server {
 	    		clientSocket = serverSocket.accept();
 		        System.out.println("Connection from: " + clientSocket.getInetAddress());
 				Client client = new Client(clientSocket);
-				System.out.println(roomThread.getIsGameEnded());
 		    	if(i%maxPlayersInRoom==0 || roomThread.getIsGameEnded()){
 		    		roomThread = new RoomThread(getDeckOfCards());
 		    		roomThread.addClient(0,client);
