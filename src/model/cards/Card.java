@@ -2,7 +2,7 @@ package model.cards;
 
 import java.io.Serializable;
 
-public class Card implements Serializable {
+public class Card implements Serializable, Comparable<Card> {
 	
 	private static final long serialVersionUID = 4659238855265416272L;
 
@@ -36,5 +36,17 @@ public class Card implements Serializable {
 
 	public void setClickable(boolean isClickable) {
 		this.isClickable = isClickable;
+	}
+
+	@Override
+	public int compareTo(Card card) {
+		int resultValue = this.getCardValue().compareTo(card.getCardValue());
+		int resultSuit  = this.getSuit().compareTo(card.getSuit());
+		if((resultValue==0) && (resultSuit==0)){
+			return 0;
+		}else{
+			return 1;
+		}
+
 	}
 }
