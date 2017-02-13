@@ -26,6 +26,7 @@ public class RoomThread extends Thread {
 	private int whoseTurn = 0;
 	private Object[] keyList;
 	private ArrayList<Card> globalClientCards = new ArrayList();
+	private final Map<Integer, String> clientsLogins = new HashMap();
 	
 	public RoomThread(Stack<Card> cards){
 		this.cardsDeck = cards;
@@ -111,15 +112,24 @@ public class RoomThread extends Thread {
  					break;
 				case 5:
 					whoseTurn = (whoseTurn +1)%(clients.size());
-					dataFromServer = new DataFromServer(11, globalClientCards,dataFromClient.getRequest(), (Integer)keyList[whoseTurn]);
+					dataFromServer = new DataFromServer(11, globalClientCards,dataFromClient.getString(), (Integer)keyList[whoseTurn]);
 					sendPacketToEveryone(dataFromServer);
 					globalClientCards.clear();
 					break;
 				case 6:
 					whoseTurn = (whoseTurn +1)%(clients.size());
-					dataFromServer = new DataFromServer(12, globalClientCards,dataFromClient.getRequest(), (Integer)keyList[whoseTurn]);
+					dataFromServer = new DataFromServer(12, globalClientCards,dataFromClient.getString(), (Integer)keyList[whoseTurn]);
 					sendPacketToEveryone(dataFromServer);
 					globalClientCards.clear();
+					break;
+				case 7: 
+					String login = dataFromClient.getString();
+					System.out.println("Nowy gracz: " + login);
+					
+					clientsLogins.put((Integer)keyList[whoseTurn], login);
+					clients.get(keyList[whoseTurn]).setLogin(login);
+					
+					sendPacketToEveryone(new DataFromServer(13, clientsLogins, (Integer)keyList[whoseTurn]));
 					break;
 				
 			}
@@ -154,18 +164,16 @@ public class RoomThread extends Thread {
 				clients.remove(keyList[whoseTurn]);
 				keyList = clients.keySet().toArray();
 				System.out.println("Clients hashmap size: "+ clients.size());
-				
+				//sendPacketToEveryone(new DataFromServer(14,whoseTurn));
 				if(!clients.isEmpty()){
 					//whoseTurn = (whoseTurn +1)%(clients.size());
-					if(whoseTurn==clients.size()){
+					if(whoseTurn==clients.size() && clients.size()>1){
 						whoseTurn-=1;
 					}
 					System.out.println("Teraz ruch gracza: " + keyList[whoseTurn]);
 					dataFromServer = new DataFromServer(4, (Integer)keyList[whoseTurn]);
 					sendPacketToEveryone(dataFromServer);
-				}
-				
-				
+				}	
 			}
 		}
 		return (DataFromClient) readObject;
@@ -177,7 +185,7 @@ public class RoomThread extends Thread {
 			client.getObjectOutputStream().reset();
 			client.getObjectOutputStream().writeObject(dataFromServer);
 		} catch (IOException e) {
-			e.printStackTrace();
+			//e.printStackTrace();
 		}
 	}
 	
@@ -243,13 +251,12 @@ public class RoomThread extends Thread {
 		keyList = clients.keySet().toArray();
 		
 		System.out.println("clients size: " + clients.size());
-		dataFromServer = new DataFromServer(1, cardsOnTable, getStartingCards(), clientId, whoseTurn);
-		try {
-			client.getObjectOutputStream().reset();
-			client.getObjectOutputStream().writeObject(dataFromServer);
-		} catch (IOException e) {
-			e.printStackTrace();
+		if(clients.size()>1){
+			dataFromServer = new DataFromServer(1, cardsOnTable, getStartingCards(), clientId, clientsLogins, whoseTurn);
+		}else{
+			dataFromServer = new DataFromServer(1, cardsOnTable, getStartingCards(), clientId, whoseTurn);
 		}
+		sendPacket(client, dataFromServer);
 		
 	}
 	

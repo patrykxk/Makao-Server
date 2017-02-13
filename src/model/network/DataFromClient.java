@@ -11,7 +11,7 @@ public class DataFromClient implements Serializable{
 	private static final long serialVersionUID = 4069786321538302229L;
 	int packetId;
 	private ArrayList<Card> clientCards;
-	private String request;
+	private String string;
 	
 	public int getPacketId() {
 		return packetId;
@@ -29,8 +29,8 @@ public class DataFromClient implements Serializable{
 		this.clientCards = clientCards;
 	}
 	
-	public String getRequest(){
-		return request;
+	public String getString(){
+		return string;
 	}
 	
 }

@@ -11,6 +11,7 @@ class Client {
 	private Socket clientSocket = null;
 	private ObjectOutputStream objectOutputStream;
 	private ObjectInputStream objectInputStream;
+	private String login;
 	
 	public Client(Socket clientSocket) {
 		this.clientSocket = clientSocket; 
@@ -29,6 +30,11 @@ class Client {
 	public ObjectInputStream getObjectInputStream() {
 		return objectInputStream;
 	}
-
+	public void setLogin(String login){
+		this.login = login;
+	}
+	public String getLogin(){
+		return login;
+	}
 
 }
